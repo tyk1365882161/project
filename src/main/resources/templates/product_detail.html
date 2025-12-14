@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('商品详情')}"></head>
+<body>
+
+    <nav th:replace="~{layout :: navbar}"></nav>
+
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">首页</a></li>
+                <li class="breadcrumb-item active" aria-current="page" th:text="${product.name}">商品名</li>
+            </ol>
+        </nav>
+
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+                <div class="row">
+                    <div class="col-md-6 text-center mb-4 mb-md-0">
+                        <img th:src="${product.imageUrl}" class="img-fluid rounded shadow-sm" 
+                             alt="商品图片" style="max-height: 400px; object-fit: contain;">
+                    </div>
+
+                    <div class="col-md-6">
+                        <h2 class="fw-bold mb-3" th:text="${product.name}">iPhone 15 Pro</h2>
+                        <p class="text-muted mb-4" th:text="${product.description}">
+                            这里是商品的详细描述...
+                        </p>
+
+                        <div class="mb-4">
+                            <h3 class="text-danger fw-bold">
+                                ￥<span th:text="${product.price}">9999.00</span>
+                            </h3>
+                            <span class="badge bg-success" th:if="${product.stock > 0}">现货充足</span>
+                            <span class="badge bg-secondary" th:if="${product.stock <= 0}">暂时缺货</span>
+                            <span class="text-muted ms-2">剩余库存: <span th:text="${product.stock}">10</span></span>
+                        </div>
+
+                        <div class="d-grid gap-2 col-lg-8">
+                            <a th:href="@{/add-cart(pid=${product.id})}" 
+                               class="btn btn-primary btn-lg"
+                               th:classappend="${product.stock <= 0} ? 'disabled' : ''">
+                                <i class="bi bi-cart-plus"></i> 立即加入购物车
+                            </a>
+                            
+                            <a href="/" class="btn btn-outline-secondary">
+                                继续购物
+                            </a>
+                        </div>
+                        
+                        <div class="mt-4 pt-3 border-top small text-muted">
+                            <p class="mb-1"><i class="bi bi-shield-check text-success"></i> 正品保证</p>
+                            <p class="mb-1"><i class="bi bi-truck text-success"></i> 极速发货</p>
+                            <p class="mb-0"><i class="bi bi-arrow-repeat text-success"></i> 7天无理由退换</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-5">
+            <h4>商品详细介绍</h4>
+            <hr>
+            <div class="p-3 bg-white rounded">
+                <p th:text="${product.description}">这里可以展示更长的HTML富文本描述...</p>
+            </div>
+        </div>
+    </div>
+
+    <footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

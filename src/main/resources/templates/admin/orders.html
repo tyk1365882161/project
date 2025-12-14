@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>订单管理 - 商城后台</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+</head>
+<body>
+<div class="d-flex">
+    <div class="bg-dark text-white p-3 min-vh-100" style="width: 250px;">
+        <h4><i class="bi bi-speedometer2"></i> 商城后台</h4>
+        <hr>
+        <ul class="nav flex-column">
+            <li class="nav-item"><a href="/admin/dashboard" class="nav-link text-white">📊 销售统计报表</a></li>
+            <li class="nav-item"><a href="/admin/products" class="nav-link text-white">📦 商品管理</a></li>
+            <li class="nav-item"><a href="/admin/orders" class="nav-link text-white active bg-primary">🧾 订单管理</a></li>
+            <li class="nav-item"><a href="/admin/users" class="nav-link text-white">👥 客户与日志</a></li>
+            <li class="nav-item mt-5"><a href="/" class="nav-link text-white">← 返回前台</a></li>
+        </ul>
+    </div>
+
+    <div class="flex-grow-1 p-4">
+        <h2 class="mb-4">全平台订单管理</h2>
+
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>订单号</th>
+                            <th>下单用户</th>
+                            <th>商品详情 (简略)</th>
+                            <th>总金额</th>
+                            <th>下单时间</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="order : ${orders}">
+                            <td class="fw-bold text-muted">#<span th:text="${order.id}">101</span></td>
+                            
+                            <td>
+                                <div class="small">用户ID: <span th:text="${order.userId}">1</span></div>
+                                <div class="text-muted small" th:text="${order.userEmail}">test@qq.com</div>
+                            </td>
+
+                            <td>
+                                <div th:each="item : ${order.items}" class="small">
+                                    <span th:text="${item.productName}">iPhone</span>
+                                    <span class="text-muted">x[[${item.quantity}]]</span>
+                                </div>
+                            </td>
+
+                            <td class="fw-bold text-danger">￥<span th:text="${order.totalPrice}">999</span></td>
+
+                            <td class="small" th:text="${#dates.format(order.createTime, 'yyyy-MM-dd HH:mm')}">2023-12-12</td>
+
+                            <td>
+                                <span th:if="${order.status == '已支付'}" class="badge bg-warning text-dark">待发货</span>
+                                <span th:if="${order.status == '已发货'}" class="badge bg-success">已发货</span>
+                                <span th:if="${order.status == '完成'}" class="badge bg-secondary">已完成</span>
+                            </td>
+
+                            <td>
+                                <a th:if="${order.status == '已支付'}" 
+                                   th:href="@{/admin/orders/ship(id=${order.id})}" 
+                                   class="btn btn-sm btn-primary"
+                                   onclick="return confirm('确认要把这个订单标记为已发货吗？')">
+                                    <i class="bi bi-truck"></i> 发货
+                                </a>
+                                
+                                <button th:if="${order.status == '已发货'}" class="btn btn-sm btn-outline-secondary" disabled>
+                                    已处理
+                                </button>
+                                                                
+                                <a th:href="@{/admin/orders/delete(id=${order.id})}" 
+                                    class="btn btn-sm btn-danger ms-1"
+                                    onclick="return confirm('警告：删除订单不可恢复！确定要删除吗？')">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div th:if="${orders.isEmpty()}" class="p-5 text-center text-muted">
+                暂无任何订单数据
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

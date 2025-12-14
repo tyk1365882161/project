@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"></head>
+<body>
+<div class="container mt-4">
+    <a href="/admin/dashboard" class="btn btn-secondary mb-3">返回</a>
+
+    <h4>用户列表</h4>
+    <table class="table table-sm mb-5">
+        <thead><tr><th>ID</th><th>用户名</th><th>邮箱</th><th>角色</th></tr></thead>
+        <tbody>
+            <tr th:each="u : ${users}">
+                <td th:text="${u.id}"></td>
+                <td th:text="${u.username}"></td>
+                <td th:text="${u.email}"></td>
+                <td th:text="${u.role}"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h4>系统操作日志 (浏览/购买)</h4>
+    <table class="table table-sm table-hover">
+        <thead class="table-light"><tr><th>时间</th><th>用户</th><th>行为</th><th>详情</th><th>操作</th></tr></thead>
+        <tbody>
+            <tr th:each="log : ${logs}">
+                <td th:text="${#dates.format(log.createTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                <td th:text="${log.username}"></td>
+                <td>
+                    <span th:if="${log.action == 'BUY'}" class="badge bg-success">购买</span>
+                    <span th:if="${log.action == 'BROWSE'}" class="badge bg-info">浏览</span>
+                </td>
+                <td th:text="${log.content}"></td>
+                <td>
+                    <a th:href="@{/admin/logs/delete(id=${log.id})}" 
+                    class="text-danger" 
+                    onclick="return confirm('删除这条日志？')">
+                    删除
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

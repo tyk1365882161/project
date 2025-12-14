@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('我的购物车')}"></head>
+<body>
+
+    <nav th:replace="~{layout :: navbar}"></nav>
+
+    <div class="container min-vh-100">
+        <h2 class="mb-4"><i class="bi bi-cart3"></i> 购物车清单</h2>
+
+        <div th:if="${items.isEmpty()}" class="text-center py-5">
+            <p class="lead">购物车空空如也~</p>
+            <a href="/" class="btn btn-primary">去逛逛</a>
+        </div>
+
+        <div th:if="${!items.isEmpty()}">
+            <div class="table-responsive shadow-sm rounded">
+                <table class="table table-hover align-middle mb-0 bg-white">
+                    <thead class="table-light">
+                        <tr>
+                            <th>商品信息</th>
+                            <th>单价</th>
+                            <th>数量</th>
+                            <th>小计</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="item : ${items}">
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <img th:src="${item.product.imageUrl}" style="width: 50px; height: 50px; object-fit: cover;" class="rounded me-3">
+                                    <div>
+                                        <div class="fw-bold" th:text="${item.product.name}">Iphone</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>￥<span th:text="${item.product.price}"></span></td>
+                            <td>
+                                <span class="badge bg-light text-dark border" th:text="${item.quantity}">1</span>
+                            </td>
+                            <td class="text-danger fw-bold">
+                                ￥<span th:text="${item.product.price * item.quantity}"></span>
+                            </td>
+                            <td>
+                                <a th:href="@{/cart/delete(itemId=${item.id})}" 
+                                class="btn btn-sm btn-outline-danger"
+                                onclick="return confirm('确定要移出购物车吗？');">
+                                    <i class="bi bi-trash"></i> 删除
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card mt-3 shadow-sm border-0">
+                <div class="card-body d-flex justify-content-end align-items-center">
+                    
+                    <form action="/checkout" method="post" onsubmit="return preventDoubleSubmit()">
+                        
+                        <button type="submit" id="checkoutBtn" class="btn btn-lg btn-success px-5">
+                            <i class="bi bi-credit-card"></i> 确认下单支付
+                        </button>
+                        
+                    </form>
+                </div>
+            </div>
+
+            <script>
+                function preventDoubleSubmit() {
+                    var btn = document.getElementById('checkoutBtn');
+                    // 1. 禁用按钮，防止再次点击
+                    btn.disabled = true;
+                    
+                    // 2. 改变按钮文字，给用户反馈
+                    btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> 正在处理...';
+                    
+                    // 3. 返回 true，允许表单继续提交
+                    return true;
+                }
+            </script>
+        </div>
+    </div>
+
+    <footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

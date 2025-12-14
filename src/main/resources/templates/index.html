@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('商城首页')}"></head>
+<body>
+
+    <nav th:replace="~{layout :: navbar}"></nav>
+
+    <div class="container">
+        <div class="p-5 mb-4 bg-light rounded-3 shadow-sm text-center">
+            <h1 class="display-5 fw-bold">热门商品推荐</h1>
+            <p class="col-md-8 fs-4 mx-auto">精选全球好货，品质生活从这里开始。</p>
+        </div>
+        
+        <div th:if="${msg}" class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    <span th:text="${msg}">下单成功！邮件已发送。</span>
+                </div>
+                
+                <div>
+                    <a href="/" class="btn btn-sm btn-success text-white text-decoration-none me-3">
+                        返回
+                    </a>
+                    
+                </div>
+            </div>
+        </div>
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <span class="fw-bold">下单失败：</span>
+                    <span th:text="${error}">库存不足</span>
+                </div>
+                
+                <div>
+                    <a href="/cart" class="btn btn-sm btn-danger text-white text-decoration-none me-2">
+                        <i class="bi bi-cart"></i> 返回购物车
+                    </a>
+                    
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
+            <div class="col" th:each="product : ${products}">
+                <div class="card h-100 card-product border-0 shadow-sm">
+                    
+                    <a th:href="@{/product/{id}(id=${product.id})}">
+                        <img th:src="${product.imageUrl}" class="card-img-top" alt="商品图片" style="height: 200px; object-fit: cover;">
+                    </a>
+
+                    <div class="card-body">
+                        
+                        <a th:href="@{/product/{id}(id=${product.id})}" class="text-decoration-none text-dark">
+                            <h5 class="card-title" th:text="${product.name}">商品名</h5>
+                        </a>
+
+                        <p class="card-text text-muted text-truncate" th:text="${product.description}">描述</p>
+                        
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-danger fw-bold fs-5">￥<span th:text="${product.price}">99.9</span></span>
+                            <span class="badge bg-secondary">库存: <span th:text="${product.stock}">100</span></span>
+                        </div>
+                    </div>
+
+                    <div class="card-footer bg-white border-top-0 pb-3">
+                        <a th:href="@{/add-cart(pid=${product.id})}" class="btn btn-outline-primary w-100">
+                            <i class="bi bi-cart-plus"></i> 加入购物车
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>
